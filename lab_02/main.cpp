@@ -58,11 +58,7 @@ int main()
                 break;
 
 			case 3:
-				header_output();
-				for (int i = 0; i < n; i++)
-				{
-					flat_output(mas[i]);
-				}
+				mysort(mas, n);
 				break;
 			case 5:
 				f = fopen(dbfilename, "w");
@@ -81,6 +77,7 @@ int main()
 					read_building_from_file(f, &mas[i]);
 				}
 				fclose(f);
+				break;
             default:
                 cout << endl;
                 break;

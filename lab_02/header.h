@@ -2,6 +2,7 @@
 #include <locale.h>
 #include <iostream>
 #include <cstring>
+#include <time.h>
 
 #define dbfilename "output.txt"
 using namespace std;
@@ -95,6 +96,7 @@ int menu()
     cout << endl;
 	cout << "1. Print DB" << endl;
     cout << "2. Add record to DB" << endl;
+	cout << "3. Sort" << endl;
     cout << "5. Save DB to file" << endl;
 	cout << "0. Load DB from file" << endl;
     for (int i = 0; i <= 80; i++)
@@ -220,4 +222,36 @@ void flat_input(flat* a)
         }
     }
 }
-
+void mysort(flat* mas, int n)
+{
+	int a = 100;
+	int b = 50;
+	flat buf;
+	flat new_mas[100];
+	time_t start_time, end_time;
+	time(&start_time);
+	for (int i = 0; i < n; i++)
+	{
+		new_mas[i] = mas[i];
+	}
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = n - 1; j > i; j--)
+		{
+			if (new_mas[j - 1].cost_per_meter > new_mas[j].cost_per_meter)
+			{
+				buf = new_mas[j - 1];
+				new_mas[j - 1] = new_mas[j];
+				new_mas[j] = buf;
+			}
+		}
+	}
+	header_output();
+	for (int i = 0; i < n; i++)
+	{
+		flat_output(new_mas[i]);
+	}
+	time(&end_time);
+	double time_spend = difftime(end_time, start_time);
+	cout << time_spend << endl;
+}
