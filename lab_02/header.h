@@ -1,9 +1,9 @@
-#include <termios.h>
-#include <unistd.h>
 #include <string>
 #include <locale.h>
 #include <iostream>
 #include <cstring>
+
+#define dbfilename "output.txt"
 using namespace std;
 // адрес 20
 // площадь 7
@@ -15,32 +15,30 @@ using namespace std;
 // владельцы 7
 // жильцы 7
 // животные 8
-int _getche(void)
+
+
+typedef struct secondary_p
 {
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON | ECHO );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
+	int year_of_build;
+	int number_of_owners;
+	int number_of_livers;
+	bool animals;
+} secondary_p;
+typedef struct primary_p
+{
+	bool is_finish;
+} primary_p;
 typedef struct flat
 {
-    int mode;
-    char address[20];
+    int mode;						// type of flat primary or secondary
+	char address[20];
     int area;
     int number_of_rooms;
     double cost_per_meter;
     union
     {
-        bool is_finish;
-        int year_of_build;
-        int number_of_owners;
-        int number_of_livers;
-        bool animals;
+		primary_p primary;
+		secondary_p secondary;
     };
 } flat;
 char all_to_small_register(char ch)
@@ -56,26 +54,57 @@ char all_to_small_register(char ch)
     }
     return ch;
 }
-char menu()
+int write_building_in_file(FILE* file, flat fl)
 {
-    char user_choice = ' ';
+	int rc;
+	rc = fprintf(file, "%-2d%-20s%-7d%-13d%-15.2lf", fl.mode, fl.address, fl.area, fl.number_of_rooms, fl.cost_per_meter);
+	if (fl.mode == 1)
+	{
+		rc += fprintf(file, "%-9d\n", fl.primary.is_finish);
+	}
+	else
+	{
+		rc += fprintf(file, "%-14d%-7d%-7d%-8d\n", fl.secondary.year_of_build, fl.secondary.number_of_owners, fl.secondary.number_of_livers, fl.secondary.animals);
+	}
+	return rc;
+}
+int read_building_from_file(FILE* file, flat *fl)
+{
+	int fin = 0;
+	int error = fscanf(file, "%2d%20s%7d%13d%15lf", &fl->mode, &fl->address, &fl->area, &fl->number_of_rooms, &fl->cost_per_meter);
+	if (fl->mode == 1)
+	{
+		error += fscanf(file, "%9d", &fin);
+		fl->primary.is_finish = bool(fin);
+	}
+	else
+	{
+		error += fscanf(file, "%14d%7d%7d%8d", &fl->secondary.year_of_build, &fl->secondary.number_of_owners, &fl->secondary.number_of_livers, &fin);
+		fl->secondary.animals = bool(fin);
+	}
+	
+	return error;
+}
+int menu()
+{
+    int user_choice = 0;
     for (int i = 0; i <= 80; i++)
     {
         cout << "-";
     }
     cout << endl;
-    cout << "L. Загрузить базу данных из памяти" << endl;
-    cout << "A. Добавить запись в базу данных" << endl;
-    cout << "P. Вывести базу данных на экран" << endl;
-    cout << "S. Сохранить базу данных в память" << endl;
+	cout << "1. Print DB" << endl;
+    cout << "2. Add record to DB" << endl;
+    cout << "5. Save DB to file" << endl;
+	cout << "0. Load DB from file" << endl;
     for (int i = 0; i <= 80; i++)
     {
         cout << "-";
     }
-    cout << endl << ">>";
-    user_choice = _getche();
+    cout << endl << ">> ";
+	cin >> user_choice;
     cout << endl << endl;
-    return all_to_small_register(user_choice);
+    return user_choice;
 }
 void header_output()
 {
@@ -94,7 +123,7 @@ void flat_output(flat fl)
     if (fl.mode == 1)
     {
         printf("primary  |");
-        if (fl.is_finish)
+        if (fl.primary.is_finish)
         {
             printf("%-9s|", "yes");
         }
@@ -110,10 +139,10 @@ void flat_output(flat fl)
     else {
         printf("secondary|");
         printf("%-9s|", " ");
-        printf("%-14d|", fl.year_of_build);
-        printf("%-7d|", fl.number_of_owners);
-        printf("%-8d|", fl.number_of_livers);
-        if (fl.animals)
+        printf("%-14d|", fl.secondary.year_of_build);
+        printf("%-7d|", fl.secondary.number_of_owners);
+        printf("%-8d|", fl.secondary.number_of_livers);
+        if (fl.secondary.animals)
         {
             printf("%-8s|\n", "yes");
         }
@@ -148,40 +177,46 @@ void flat_input(flat* a)
     {
     //##########################################################
     //This is primary
-        cout << "Is there a finish in the apartament(1-yes, 2 - no)?: ";
+        cout << "Is there a finish in the apartament(1-yes, 0 - no)?: ";
         cin >> cur;
         while (!((cur == 1) || (cur == 0)))
         {
+			cout << "Error! Wrong format" << endl;
+			cout << "Is there a finish in the apartament(1-yes, 0 - no)?: ";
             cin >> cur;
         }
         if (cur == 1)
         {
-            a->is_finish = true;
+            a->primary.is_finish = true;
         } else
         {
-            a->is_finish = false;
+			a->primary.is_finish = false;
         }
     }
     else
     {
+	//##########################################################
+	//This is secondary
         cout << "Input year of build: ";
-        cin >> a->year_of_build;
+        cin >> a->secondary.year_of_build;
         cout << "Input number of owners: ";
-        cin >> a->number_of_owners;
+        cin >> a->secondary.number_of_owners;
         cout << "Input number of Tenatns: ";
-        cin >> a->number_of_livers;
-        cout << "Were there an animals in the apartament(1-yes, 2 - no)?: ";
+        cin >> a->secondary.number_of_livers;
+        cout << "Were there an animals in the apartament(1-yes, 0 - no)?: ";
         cin >> cur;
         while (!((cur == 1) || (cur == 0)))
         {
+			cout << "Error! Wrong format" << endl;
+			cout << "Were there an animals in the apartament(1-yes, 0 - no)?: ";
             cin >> cur;
         }
         if (cur == 1)
         {
-            a->animals = true;
+            a->secondary.animals = true;
         } else
         {
-            a->animals = false;
+            a->secondary.animals = false;
         }
     }
 }
