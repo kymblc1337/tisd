@@ -108,6 +108,11 @@ int menu()
     cout << endl << endl;
     return user_choice;
 }
+void srt_output()
+{
+	cout << "+-----------------------------------------------------------------------------------------------------------------------+" << endl;
+	cout << "|                                           Sorted by cost per meter                                                    |" << endl;
+}
 void header_output()
 {
     cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+" << endl;
@@ -228,8 +233,9 @@ void mysort(flat* mas, int n)
 	int b = 50;
 	flat buf;
 	flat new_mas[100];
-	time_t start_time, end_time;
-	time(&start_time);
+	clock_t time_start, time_end;
+	//time(&start_time);
+	time_start = clock();
 	for (int i = 0; i < n; i++)
 	{
 		new_mas[i] = mas[i];
@@ -246,12 +252,43 @@ void mysort(flat* mas, int n)
 			}
 		}
 	}
+	srt_output();
 	header_output();
 	for (int i = 0; i < n; i++)
 	{
 		flat_output(new_mas[i]);
 	}
-	time(&end_time);
-	double time_spend = difftime(end_time, start_time);
-	cout << time_spend << endl;
+	//time(&end_time);
+	time_end = clock();
+	clock_t time_spend = time_end - time_start;
+	cout << "time spend in: " << double(time_spend) << endl;
+	//####################################################################
+	int key[100];
+	for (int i = 0; i < n; i++) 
+	{
+		key[i] = i;
+	}
+	time_start = clock();
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = n - 1; j > i; j--)
+		{
+			if (new_mas[j - 1].cost_per_meter > new_mas[j].cost_per_meter)
+			{
+				int a = key[j - 1];
+				key[j - 1] = key[j];
+				key[j] = a;
+			}
+		}
+	}
+	srt_output();
+	header_output();
+	for (int i = 0; i < n; i++)
+	{
+		flat_output(new_mas[key[i]]);
+	}
+	time_end = clock();
+	time_spend = time_end - time_start;
+	cout << "time spend: " << double(time_spend) << endl;
+
 }
