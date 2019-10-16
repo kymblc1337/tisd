@@ -17,27 +17,6 @@ int main()
     setlocale(LC_ALL, "RU");
     flat mas[100];
 	int n = 0;
-    /*int n = 2;                   // Длина массива
-	//####################################################################
-    a = {};
-    strcpy_s(a.address, "Solovinya_rocha");
-    a.mode = 1;
-	a.area = 125;
-	a.cost_per_meter = 25000;
-	a.number_of_rooms = 5;
-    mas[0] = a;
-	a.mode = 2;
-	a.area = 70;
-	a.cost_per_meter = 7000;
-	a.number_of_rooms = 2;
-	a.secondary.animals = true;
-	a.secondary.number_of_livers = 2;
-	a.secondary.number_of_owners = 5;
-	a.secondary.year_of_build = 2007;
-	strcpy_s(a.address, "Balashiha");
-	mas[1] = a;
-	//####################################################################
-	*/
     int user_choice = 0;
     do
     {
@@ -48,7 +27,7 @@ int main()
 				header_output();
 				for (int i = 0; i < n; i++)
 				{
-					flat_output(mas[i]);
+                    flat_output(mas[i], i + 1);
 				}
 				break;
 
@@ -60,7 +39,32 @@ int main()
 			case 3:
 				mysort(mas, n);
 				break;
-			case 5:
+            case 4:
+                cout << "input number of record to delete: ";
+                int del;
+                cin >> del;
+                if ((del > n) || (del < 1))
+                {
+                    cout << "Incorrect number of record" << endl;
+                }
+                else
+                {
+                    delete_from_db(mas, &n, del - 1);
+                }
+                break;
+            case 5:
+                double up, down;
+                cout << "input upper edge: ";
+                cin >> up;
+                cout << "input lower edge: ";
+                cin >> down;
+                if (down > up)
+                {
+                    swap(up, down);
+                }
+                search(mas, up, down, n);
+                break;
+            case 7:
 				f = fopen(dbfilename, "w");
 				fprintf(f, "%-3d\n", n);
 				for (int i = 0; i < n; i++)
@@ -85,19 +89,3 @@ int main()
     } while (1);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

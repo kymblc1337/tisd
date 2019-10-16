@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstring>
 #include <time.h>
+#define EPS 1e-6
 
 #define dbfilename "output.txt"
 using namespace std;
@@ -71,8 +72,14 @@ int write_building_in_file(FILE* file, flat fl)
 }
 int read_building_from_file(FILE* file, flat *fl)
 {
+    int error = 0;
 	int fin = 0;
-	int error = fscanf(file, "%2d%20s%7d%13d%15lf", &fl->mode, &fl->address, &fl->area, &fl->number_of_rooms, &fl->cost_per_meter);
+    char address[20];
+    error += fscanf(file, "%2d", &fl->mode);
+    error += fscanf(file, "%20s", address);
+    error += fscanf(file, "%7d", &fl->area);
+    error += fscanf(file, "%13d", &fl->number_of_rooms);
+    error += fscanf(file, "%15lf", &fl->cost_per_meter);
 	if (fl->mode == 1)
 	{
 		error += fscanf(file, "%9d", &fin);
@@ -83,8 +90,18 @@ int read_building_from_file(FILE* file, flat *fl)
 		error += fscanf(file, "%14d%7d%7d%8d", &fl->secondary.year_of_build, &fl->secondary.number_of_owners, &fl->secondary.number_of_livers, &fin);
 		fl->secondary.animals = bool(fin);
 	}
-	
-	return error;
+    strcpy(fl->address, address);
+    //cout << "address is: " << address << endl;
+    return error;
+}
+void delete_from_db(flat *mas, int *n, int pointer_to_delete)
+{
+    for (int i = pointer_to_delete; i < *n; i++)
+    {
+        mas[i] = mas[i + 1];
+    }
+    (*n)--;
+
 }
 int menu()
 {
@@ -97,7 +114,9 @@ int menu()
 	cout << "1. Print DB" << endl;
     cout << "2. Add record to DB" << endl;
 	cout << "3. Sort" << endl;
-    cout << "5. Save DB to file" << endl;
+    cout << "4. Delete element from DB" << endl;
+    cout << "5. Search as task" << endl;
+    cout << "7. Save DB to file" << endl;
 	cout << "0. Load DB from file" << endl;
     for (int i = 0; i <= 80; i++)
     {
@@ -110,17 +129,17 @@ int menu()
 }
 void srt_output()
 {
-	cout << "+-----------------------------------------------------------------------------------------------------------------------+" << endl;
-	cout << "|                                           Sorted by cost per meter                                                    |" << endl;
+    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+---+" << endl;
+    cout << "|                                             Sorted by cost per meter                                                      |" << endl;
 }
 void header_output()
 {
-    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+" << endl;
-    cout << "|Address             |Area   |Num of rooms |cost per meter |type     |finish   |year of build |Owners |Tenatns |Animals |" << endl;
-    cout << "|                    |       |             |               |         |         |              |       |        |        |" << endl;
-    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+" << endl;
+    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+---+" << endl;
+    cout << "|Address             |Area   |Num of rooms |cost per meter |type     |finish   |year of build |Owners |Tenatns |Animals |pos|" << endl;
+    cout << "|                    |       |             |               |         |         |              |       |        |        |   |" << endl;
+    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+---+" << endl;
 }
-void flat_output(flat fl)
+void flat_output(flat fl, int id)
 {
     printf("|");
     printf("%-20s|", fl.address);
@@ -141,7 +160,7 @@ void flat_output(flat fl)
         printf("%-14s|", "");
         printf("%-7s|", "");
         printf("%-8s|", "");
-        printf("%-8s|\n", "");
+        printf("%-8s|", "");
     }
     else {
         printf("secondary|");
@@ -151,14 +170,15 @@ void flat_output(flat fl)
         printf("%-8d|", fl.secondary.number_of_livers);
         if (fl.secondary.animals)
         {
-            printf("%-8s|\n", "yes");
+            printf("%-8s|", "yes");
         }
         else
         {
-            printf("%-8s|\n", "no");
+            printf("%-8s|", "no");
         }
     }
-    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+" << endl;
+    printf("%3d|\n", id);
+    cout << "+--------------------+-------+-------------+---------------+---------+---------+--------------+-------+--------+--------+---+" << endl;
 }
 void flat_input(flat* a)
 {
@@ -172,7 +192,7 @@ void flat_input(flat* a)
         cout << "Something went wrong!\nInput type of flat(1 - primary, 2 - secondary: ";
         cin >> type;
     }
-    cout << "Input address: ";
+    cout << "Input address(less than 20 symbols, use '_' insted of ' '): ";
     cin >> a->address;
     cout << "Input area: ";
     cin >> a->area;
@@ -229,12 +249,9 @@ void flat_input(flat* a)
 }
 void mysort(flat* mas, int n)
 {
-	int a = 100;
-	int b = 50;
 	flat buf;
 	flat new_mas[100];
 	clock_t time_start, time_end;
-	//time(&start_time);
 	time_start = clock();
 	for (int i = 0; i < n; i++)
 	{
@@ -256,13 +273,16 @@ void mysort(flat* mas, int n)
 	header_output();
 	for (int i = 0; i < n; i++)
 	{
-		flat_output(new_mas[i]);
+        flat_output(new_mas[i], i + 1);
 	}
-	//time(&end_time);
 	time_end = clock();
 	clock_t time_spend = time_end - time_start;
 	cout << "time spend in: " << double(time_spend) << endl;
+
+
 	//####################################################################
+
+
 	int key[100];
 	for (int i = 0; i < n; i++) 
 	{
@@ -285,10 +305,26 @@ void mysort(flat* mas, int n)
 	header_output();
 	for (int i = 0; i < n; i++)
 	{
-		flat_output(new_mas[key[i]]);
+        flat_output(new_mas[key[i]], i + 1);
 	}
-	time_end = clock();
+    time_end = clock();
 	time_spend = time_end - time_start;
 	cout << "time spend: " << double(time_spend) << endl;
 
+}
+void search(flat* mas, double up, double down, int n)
+{
+    int p = 1;
+    header_output();
+    for(int i = 0; i < n; i++)
+    {
+        if ((mas[i].mode == 2) && (mas[i].number_of_rooms == 2) && (mas[i].secondary.animals == false))
+        {
+            if ((mas[i].cost_per_meter > down) && (mas[i].cost_per_meter < up))
+            {
+                flat_output(mas[i], p);
+                p++;
+            }
+        }
+    }
 }
