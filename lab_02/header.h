@@ -247,8 +247,11 @@ void flat_input(flat* a)
         }
     }
 }
-void mysort(flat* mas, int n)
+void mysort_bubble(flat* mas, int n)
 {
+    //***********************
+    // Without key
+    //***********************
 	flat buf;
 	flat new_mas[100];
 	clock_t time_start, time_end;
@@ -279,9 +282,9 @@ void mysort(flat* mas, int n)
 	clock_t time_spend = time_end - time_start;
 	cout << "time spend in: " << double(time_spend) << endl;
 
-
-	//####################################################################
-
+    //***********************
+	// With keys
+    //***********************
 
 	int key[100];
 	for (int i = 0; i < n; i++) 
@@ -311,6 +314,81 @@ void mysort(flat* mas, int n)
 	time_spend = time_end - time_start;
 	cout << "time spend: " << double(time_spend) << endl;
 
+}
+void mysort_insert(flat* mas, int n)
+{
+    //***********************
+    // Without key
+    //***********************
+    flat buf;
+    int buf_index;
+    flat new_mas[100];
+    clock_t time_start, time_end;
+    time_start = clock();
+
+    for (int i = 0; i < n; i++)
+    {
+        new_mas[i] = mas[i];
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        buf = new_mas[i];
+        buf_index = i;
+        for (int j = i; j < n; j++)
+        {
+            if (new_mas[j].cost_per_meter < buf.cost_per_meter)
+            {
+                buf = new_mas[j];
+                buf_index = j;
+            }
+        }
+        new_mas[buf_index] = new_mas[i];
+        new_mas[i] = buf;
+    }
+    srt_output();
+    header_output();
+    for (int i = 0; i < n; i++)
+    {
+        flat_output(new_mas[i], i + 1);
+    }
+    time_end = clock();
+    clock_t time_spend = time_end - time_start;
+    cout << "time spend in: " << double(time_spend) << endl;
+    //***********************
+    // With keys
+    //***********************
+
+    int key[100];
+    for (int i = 0; i < n; i++)
+    {
+        key[i] = i;
+    }
+    time_start = clock();
+    for (int i = 0; i < n; i++)
+    {
+        buf = new_mas[i];
+        buf_index = i;
+        for (int j = i; j < n; j++)
+        {
+            if (new_mas[j].cost_per_meter < buf.cost_per_meter)
+            {
+                buf = new_mas[j];
+                buf_index = j;
+            }
+        }
+        new_mas[buf_index] = new_mas[i];
+        new_mas[i] = buf;
+    }
+    srt_output();
+    header_output();
+    for (int i = 0; i < n; i++)
+    {
+        flat_output(new_mas[key[i]], i + 1);
+    }
+    time_end = clock();
+    time_spend = time_end - time_start;
+    cout << "time spend: " << double(time_spend) << endl;
 }
 void search(flat* mas, double up, double down, int n)
 {

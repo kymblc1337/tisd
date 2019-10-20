@@ -18,6 +18,10 @@ int main()
     flat mas[100];
 	int n = 0;
     int user_choice = 0;
+    int srtmode = 0;
+
+
+
     do
     {
         user_choice = menu();
@@ -31,14 +35,28 @@ int main()
 				}
 				break;
 
+
             case 2:
                 flat_input(&(mas[n]));
                 n++;
                 break;
 
+
 			case 3:
-				mysort(mas, n);
+			    cout << endl << "1. Bubble sort" << endl << "2. Insertion sort" << endl;
+			    cout << "Whis sort do you perfer?";
+
+			    cin >> srtmode;
+			    if (srtmode == 1)
+                {
+			        mysort_bubble(mas, n);
+                } else if (srtmode == 2)
+                {
+			        mysort_insert(mas, n);
+                }
 				break;
+
+
             case 4:
                 cout << "input number of record to delete: ";
                 int del;
@@ -52,6 +70,8 @@ int main()
                     delete_from_db(mas, &n, del - 1);
                 }
                 break;
+
+
             case 5:
                 double up, down;
                 cout << "input upper edge: ";
@@ -64,6 +84,8 @@ int main()
                 }
                 search(mas, up, down, n);
                 break;
+
+
             case 7:
 				f = fopen(dbfilename, "w");
 				fprintf(f, "%-3d\n", n);
@@ -73,6 +95,8 @@ int main()
 				}
 				fclose(f);
 				break;
+
+
 			case 0:
 				f = fopen(dbfilename, "r");
 				fscanf(f, "%3d", &n);
@@ -82,9 +106,13 @@ int main()
 				}
 				fclose(f);
 				break;
+
+
             default:
                 cout << endl;
                 break;
+
+
         }
     } while (1);
     return 0;
