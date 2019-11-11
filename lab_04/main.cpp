@@ -1,129 +1,179 @@
-﻿// NOde.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
 #include <iostream>
+#include <stdio.h>
 #include <time.h>
-#define MAXSIZE 1000
-using namespace std;
-struct Node
-{
-    char data;
-    Node* next;
-};
-
-struct mstack
-{
-    char mas[MAXSIZE];
-    int n = -1;
-};
-
-void mpush(mstack* a, char letter)
-{
-    a->n++;
-    a->mas[a->n] = letter;
-}
-char mpop(mstack* a)
-{
-    a->n--;
-    return a->mas[a->n + 1];
-}
-int minit(mstack* a, char* s)
-{
-    int i = 0;
-    while (s[i] != '\0')
-    {
-        mpush(a, s[i]);
-        i++;
-    }
-    mpop(a);
-    int size = i - 1;
-    return size;
-}
-void mcheck(mstack* a, int size, char *s)
-{
-    int i = 0;
-    while ((i < size) && (mpop(a) == s[i]))
-    {
-        i++;
-    }
-    cout << "RESULT: ";
-    if (i == size)
-    {
-        cout << "PALINDROME" << endl;
-    }
-    else
-    {
-        cout << "NOT A PALINDROME" << endl;
-    }
-}
+#include "cdio.h"
 
 
-int npush(Node** head, char c)
-{
-    Node* foo = new Node;
-    if (foo != NULL)
-    {
-        foo->data = c;
-        foo->next = *head;
-        *head = foo;
-    }
-    else
-    {
-        return 1;
-    }
-    
-    
-}
-char npop(Node** head) {
-    if (*head == NULL)
-    {
-        return '\0';
-    }
-    Node* foo = *head;
-    char save = foo->data;
-    *head = (*head)->next;
-    delete foo;
-    return save;
-}
 int main()
 {
-    
-    mstack a;
-    Node* head = NULL;
-    char s[MAXSIZE];
-
-    
-    
-    cout << "'A' and 'a' are different letters, be careful" << endl;
-    cout << "Please, input line to check: ";
-
-    // massive method
-    fgets(s, MAXSIZE, stdin);
-    int size = minit(&a, s);
-    mcheck(&a, size, s);
-    
-
-    //Node method
-    int i = 0;
-    while (s[i] != '\0')
+    int mode_work = 0;
+    int usr;
+    cout << "How do you want to work?" << endl;
+    cout << "1. List" << endl;
+    cout << "2. Vector" << endl;
+    cout << "3. Task" << endl;
+    cin >> mode_work;
+    if (mode_work == 1) // working with node
     {
-        npush(&head, s[i]);
-        i++;
+        Node* head = NULL;
+        char p;
+        usr = -1;
+        while(usr != 0)
+        {
+            cout << "1. Push element" << endl;
+            cout << "2. Pop element" << endl;
+            cout << "3. Stack address info" << endl;
+            cout << "4. See stack" << endl;
+            cout << "0. Exit" << endl;
+            cin >> usr;
+            switch (usr)
+            {
+                case 1:
+                    cout << "Input char to push: ";
+                    cin >> p;
+                    npush_witch_check(&head, p);
+                    break;
+                case 2:
+                    cout << "Poped: " << npop_witch_check(&head) << endl;
+                    break;
+                case 3:
+                    cout << "Adreses: ";
+                    masdelout();
+                    cout << endl;
+                    break;
+                case 4:
+                    nstackout(&head);
+                    break;
+            }
+            cout << endl;
+        }
     }
-    npop(&head);
-    i = 0;
-    while ((i < size) && (npop(&head) == s[i]))
+    else if (mode_work == 2) // working with massive
     {
-        i++;
+        char p;
+        mstack a;
+        usr = -1;
+        while(usr != 0) {
+            cout << "1. Push element" << endl;
+            cout << "2. Pop element" << endl;
+            cout << "3. Stack info" << endl;
+            cout << "0. Exit" << endl;
+            cin >> usr;
+            switch (usr) {
+                case 1:
+                    if (a.n == 4)
+                    {
+                        cout << "ERROR! STACK OVERFLOW";
+                        return 1;
+                    }
+                    cout << "Input char to push: ";
+                    cin >> p;
+                    mpush(&a, p);
+                    break;
+                case 2:
+                    cout << "Popped: " << mpop(&a) << endl;
+                    break;
+                case 3:
+                    for (int i = a.n; i >= 0; i--) {
+                        cout << a.mas[i];
+                    }
+                    cout << endl;
+                    break;
+            }
+            cout << endl;
+        }
     }
-    cout << "RESULT: ";
-    if (i == size)
-    {
-        cout << "PALINDROME" << endl;
-    }
-    else
-    {
-        cout << "NOT A PALINDROME" << endl;
+    else if (mode_work == 3) {
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        clock_t time_start, time_end, time_spend;
+        mstack a;
+        Node *head = NULL;
+        char s[MAXSIZE];
+        int mode = 0;
+
+
+        cout << "'A' and 'a' are different letters, be careful" << endl;
+        cout << "Please, input line to check: ";
+        fgets(s, MAXSIZE, stdin);
+        fgets(s, MAXSIZE, stdin);
+        cout << "Do you want to see stack info(debug)?:" << endl << "1.Yes" << endl << "0.No" << endl;
+        cin >> mode;
+        cout << endl;
+
+
+
+
+        // massive method
+        time_start = clock();
+        int i = 0;
+
+        while (s[i] != '\0') {
+            mpush(&a, s[i]);
+            i++;
+        }
+        mpop(&a);
+        int size = i - 1;
+
+        i = 0;
+        while ((i < size) && (mpop(&a) == s[i])) {
+            i++;
+        }
+        cout << "MASSIVE METHOD RESULT: ";
+        if (i == size) {
+            cout << "PALINDROME" << endl;
+        } else {
+            cout << "NOT A PALINDROME" << endl;
+        }
+        time_end = clock();
+        time_spend = time_end - time_start;
+        cout << "time spend for massive method:" << double(time_spend) << endl << endl;
+
+        //Node method
+        if (mode == 0) {
+            time_start = clock();
+            i = 0;
+            while (s[i] != '\0') {
+                npush(&head, s[i]);
+                i++;
+            }
+            npop(&head);
+            i = 0;
+            while ((i < size) && (npop(&head) == s[i])) {
+                i++;
+            }
+            cout << "STACK METHOD RESULT  : ";
+            if (i == size) {
+                cout << "PALINDROME" << endl;
+            } else {
+                cout << "NOT A PALINDROME" << endl;
+            }
+            time_end = clock();
+            time_spend = time_end - time_start;
+            cout << "time spend for node method   :" << double(time_spend) << endl;
+        } else {
+            time_start = clock();
+            i = 0;
+            while (s[i] != '\0') {
+                npush_witch_check(&head, s[i]);
+                i++;
+            }
+            npop(&head);
+            i = 0;
+            while ((i < size) && (npop_witch_check(&head) == s[i])) {
+                i++;
+            }
+            cout << "STACK METHOD RESULT  : ";
+            if (i == size) {
+                cout << "PALINDROME" << endl;
+            } else {
+                cout << "NOT A PALINDROME" << endl;
+            }
+            time_end = clock();
+            time_spend = time_end - time_start;
+            cout << "time spend for node method   :" << double(time_spend) << endl;
+            masdelout();
+        }
     }
     return 0;
 }
