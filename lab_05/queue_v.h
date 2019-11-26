@@ -104,6 +104,7 @@ void avr() //just for debug
 void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_service_min)
 {
     int timer = 0;
+    const int MAGIC = 1000;
     vip.head = 0;
     basic.head = 0;
     bool is_second_in_oa = false;
@@ -111,7 +112,7 @@ void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_servi
     int throwed = 0;
     int second = 0;
     int succes = 0;
-    while (vip.head <= 1000)
+    while (vip.head <= MAGIC)
     {
         // Если пришла вип заявка
         if (vip.time_arrived[vip.head] <= timer)
@@ -163,16 +164,17 @@ void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_servi
     int result_error;
     if ((t_arrived_max - t_arrived_min) >= (t_service_max - t_service_min))
     {
-        result_error = 1000 * (t_arrived_max + t_arrived_min) / 2;
+        result_error = MAGIC * (t_arrived_max + t_arrived_min) / 2;
     }
     else
     {
-        result_error = 1000 * (t_service_max + t_service_min) / 2;
+        result_error = MAGIC * (t_service_max + t_service_min) / 2;
     }
-    cout << "succes            :" << succes << endl;
-    cout << "time spend        :" << (double)timer / 1000 << endl;
-    cout << "\'throwed\'         :" << throwed << endl;
-    cout << "error koeffecient :" << fabs((double)(result_error - timer)) / result_error * 100 << "%";
+    cout << "time spend        : " << (double)timer / 1000 << endl;
+    cout << "\'throwed\'         : " << throwed << endl;
+    cout << "requests in       : " << MAGIC + basic.head << endl;
+    cout << "requests out      : " << MAGIC + succes << endl;
+    cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%";
 }
 
 #endif //LAB_05_QUEUE_V_H
