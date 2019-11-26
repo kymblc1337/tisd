@@ -45,7 +45,6 @@ void v_init_basic(int size, int t_arrived_max, int t_arrived_min, int t_service_
     {
         basic.time_arrived[i] = rand() % (t_arrived_max - t_arrived_min) + t_arrived_min;
         basic.time_service[i] = rand() % (t_service_max - t_service_min) + t_service_min;
-        
     }
     for (int i = 1; i < size; i++)
     {
@@ -103,6 +102,14 @@ void avr() //just for debug
 
 void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_service_min)
 {
+    /* * * * * * * * * * * * * * * * * * * * * * * *
+     * oa is an apparat, that service the requests *
+     *     requests has two types: vip and basic   *
+     *   if it's time to service the vip request   *
+     *   we have to do it, no matter is it basic   *
+     *   request in oa now. If it is, we have to   *
+     *            throw it away                    *
+     * * * * * * * * * * * * * * * * * * * * * * * */
     int timer = 0;
     const int MAGIC = 1000;
     vip.head = 0;
@@ -112,49 +119,48 @@ void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_servi
     int throwed = 0;
     int second = 0;
     int succes = 0;
+    timer = 1400;
     while (vip.head <= MAGIC)
     {
-        // Если пришла вип заявка
+        // checking 'is is time to send vip in oa
         if (vip.time_arrived[vip.head] <= timer)
         {
             is_vip_in_oa = true;
-            if (!(vip.head % 100))
+            if (!(vip.head % 100) && vip.head != 0)
             {
-                cout << "time is: " << (double)timer / 1000 << endl;
                 cout << "served : " << vip.head << endl;
+                cout << "time is: " << (double)timer / 1000 << endl;
             }
             if (is_second_in_oa == true)
             {
-                // Если вторая заявка в ОА
-                // убрать вторую заявку в хвост
+                // need to throw it out from array;
+                cout << "Throwing basic [" << basic.head << "]" << endl;
+                cout << "At time " << timer << endl;
                 basic.head++;
+                is_second_in_oa = false;
                 throwed++;
             }
             timer += vip.time_service[vip.head];
             vip.head++;
         }
-        // Если вип заявки нет
+        // not time yet
         else
         {   
-            if (is_second_in_oa == false) // Если заявки второго типа нет в аппарате
+            if (is_second_in_oa == false) // need push second to oa if possible
             {
                 if (basic.time_arrived[basic.head] <= timer)
                 {
-                    is_second_in_oa = true; // Вторая заявка в аппарате
+                    is_second_in_oa = true; // pushing if possible
                 }
             }
-            if (is_second_in_oa == true) // Вторая заявка была в аппарате
+            if (is_second_in_oa == true) // if second in oa, then servicing
             {
                 basic.time_service[basic.head]--;
                 second++;
-                /*if (second > 1200)
-                {
-                    cout << "time is" << timer << endl;
-                    cout << "basic " << basic.time_service[basic.head] << endl;
-                }*/
                 if (basic.time_service[basic.head] <= 0)
                 {
                     basic.head++;
+                    is_second_in_oa = false;
                     succes++;
                 }
             }
@@ -162,7 +168,7 @@ void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_servi
         }
     }
     int result_error;
-    if ((t_arrived_max - t_arrived_min) >= (t_service_max - t_service_min))
+    if ((t_arrived_max + t_arrived_min)/2 >= (t_service_max + t_service_min)/2)
     {
         result_error = MAGIC * (t_arrived_max + t_arrived_min) / 2;
     }
@@ -170,11 +176,13 @@ void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_servi
     {
         result_error = MAGIC * (t_service_max + t_service_min) / 2;
     }
+
     cout << "time spend        : " << (double)timer / 1000 << endl;
     cout << "\'throwed\'         : " << throwed << endl;
     cout << "requests in       : " << MAGIC + basic.head << endl;
     cout << "requests out      : " << MAGIC + succes << endl;
-    cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%";
+    cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%" << endl;
+    //cout << "successfulu passed: " << succes << endl;
 }
 
 #endif //LAB_05_QUEUE_V_H
