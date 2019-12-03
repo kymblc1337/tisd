@@ -21,7 +21,6 @@ using namespace std;
 
 int main()
 {
-
     int work_mode;
     cout << "Select work mode:" << endl;
     cout << "1. Massive" << endl;
@@ -33,6 +32,11 @@ int main()
     double minta = 1;
     double maxts = 4;
     double mints = 0;
+
+    double bmaxta = 3;
+    double bminta = 0;
+    double bmaxts = 1;
+    double bmints = 0;
 
     cout << "Do you want to input your own time limits?" << endl;
     cout << "1.Yes" << endl;
@@ -51,14 +55,26 @@ int main()
         cin >> maxts;
         cout << "Input minumum time service:" << endl;
         cin >> mints;
+
+
+        cout << "For basic queue:" << endl;
+        cout << "Input maximum time arrive:" << endl;
+        cin >> bmaxta;
+        cout << "Input minimum time arrive:" << endl;
+        cin >> bminta;
+
+        cout << "Input maximum time service:" << endl;
+        cin >> bmaxts;
+        cout << "Input minumum time service:" << endl;
+        cin >> bmints;
     }
 
-
+    v_init_vip(1500, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+    v_init_basic(20000, (int)(bmaxta * 1000), (int)(0 * 1000), (int)(bmaxts * 1000), (int)(bmints * 1000));
     if (work_mode == 1) {
         clock_t time_start, time_end, time_spend;
         time_start = clock();
-        v_init_vip(1500, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
-        v_init_basic(20000, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+
         //v_output(100, 1);
         //worker(5000, 1000, 4000, 0);
         worker_another_ver((int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));

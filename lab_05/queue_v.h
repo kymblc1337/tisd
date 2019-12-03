@@ -131,8 +131,6 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
             local_vip.time_service[local_vip.tail] = vip.time_service[vip.head];
             vip.head++;
             local_vip.tail++;
-            // cout << "Added vip at time " << (double)timer / 1000 << endl;
-            // cout << "vip tail: " << local_vip.tail << endl;
         }
         // checking is is time to send basic in oa
         for (int j = basic.head; basic.time_arrived[j] <= timer; j++)
@@ -141,8 +139,6 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
             local_basic.time_service[local_basic.tail] = basic.time_service[basic.head];
             basic.head++;
             local_basic.tail++;
-            //cout << "Added basic at time " << (double)timer / 1000 << endl;
-            //cout << "Basic tail: " << local_basic.tail << endl;
         }
 
         //#################################################################################
@@ -154,7 +150,6 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
                 cout << "served                     : " << local_vip.head << endl;
                 cout << "current vip queue length   : " << local_vip.tail - local_vip.head << endl;
                 cout << "current basic queue length : " << local_basic.tail - local_basic.head << endl;
-                //cout << "debug :" << local_basic.tail << " " << local_basic.head << endl;
                 cout << "time is                    : " << (double)timer / 1000 << endl << endl << endl;
 
             }
@@ -169,7 +164,6 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
                 local_basic.time_service[local_basic.tail] = local_basic.time_service[local_basic.head];
                 local_basic.tail++;
                 local_basic.head++;
-                //out << "basic throwed out in time:" << (double)timer / 1000 << endl;
                 throwed++;
 
                 time_second_servicing = 0;
@@ -195,7 +189,6 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
             {
                 local_basic.head++;
                 is_basic_in_oa = false;
-                //cout << "basic passed at time " << (double)timer / 1000 << endl;
                 time_second_servicing = 0;
                 success++;
             }

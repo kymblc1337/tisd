@@ -32,7 +32,7 @@ void Creation(Queue *Q)
     Q->size=0;
 }
 
-Node* Add(Queue *Q, int time_arv, int time_srv)
+void Add(Queue *Q, int time_arv, int time_srv)
 {
     Q->last->next=new Node;
     Q->last=Q->last->next;
@@ -40,12 +40,27 @@ Node* Add(Queue *Q, int time_arv, int time_srv)
     Q->last->timer_arrived = time_arv;
     Q->last->next=NULL; //обнуление указателя на следующий элемент
     Q->size++;
-    return Q->last;
+    for(int i = 0; i < msize; i++)
+    {
+        if (Q->last == masdel[i]) {
+            for (int j = i; j < msize - 1; j++) {
+                masdel[j] = masdel[j + 1];
+            }
+            msize--;
+        }
+        break;
+    }
 }
 void Delete(Queue *Q)
 {
-    cout << "Gonna delete " << Q->first->next << endl;
-    Q->first=Q->first->next; //смещение указателя
+    //cout << "Gonna delete " << Q->first->next << endl;
+    Node *tmp;
+    tmp = Q->first->next;
+    //Q->first = Q->first->next; //смещение указателя
+    //cout << "Free at address " << Q->first << endl;
+    masdel[msize++] = Q->first;
+    free(Q->first);
+    Q->first = tmp;
     Q->size--;
 }
 void Output(Queue *Q)
@@ -81,7 +96,7 @@ void worker_with_list_adr(int t_arrived_max, int t_arrived_min, int t_service_ma
     int time_second_servicing = 0;
     int success = 0;
 
-    while (vip_passed <= MAGIC)
+    while (vip_passed < MAGIC)
     {
         //#################################################################################
 
@@ -124,7 +139,7 @@ void worker_with_list_adr(int t_arrived_max, int t_arrived_min, int t_service_ma
                 // pushing basic element from oa to the end of the basic queue
                 Add(&basic_q, basic_q.first->next->timer_arrived, basic_q.first->next->time_service);
                 Delete(&basic_q);
-                //out << "basic throwed out in time:" << (double)timer / 1000 << endl;
+                cout << "basic throwed" << endl;
                 throwed++;
 
                 time_second_servicing = 0;
@@ -149,6 +164,7 @@ void worker_with_list_adr(int t_arrived_max, int t_arrived_min, int t_service_ma
                 if (time_second_servicing == basic_q.first->next->time_service)
                 {
                     Delete(&basic_q);
+                    cout << "Basic served" << endl;
                     is_basic_in_oa = false;
                     //cout << "basic passed at time " << (double)timer / 1000 << endl;
                     time_second_servicing = 0;
@@ -185,8 +201,12 @@ void worker_with_list_adr(int t_arrived_max, int t_arrived_min, int t_service_ma
 void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, int t_service_min)
 {
 
-    v_init_vip(1500, t_arrived_max, t_arrived_min, t_service_max, t_service_min);
-    v_init_basic(20000, t_arrived_max, t_arrived_min, t_service_max, t_service_min);
+    //v_init_vip(1500, t_arrived_max, t_arrived_min, t_service_max, t_service_min);
+    //v_init_basic(20000, (int)(3 * 1000), (int)(0 * 1000), (int)(1 * 1000), (int)(0 * 1000));
+    int frm;
+    cout << "Do you want to see mem.fragmentation?" << endl << "1.Yes" << endl << "0.No" << endl;
+    cin >> frm;
+
 
     Queue vip_q;
     Queue basic_q;
@@ -212,14 +232,12 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
         {
             Add(&vip_q, vip.time_arrived[vip.head], vip.time_service[vip.head]);
             vip.head++;
-            //cout << "Added vip at time " << (double)timer / 1000 << endl;
         }
         // checking is is time to send basic in oa
         for (int j = basic.head; basic.time_arrived[j] <= timer; j++)
         {
             Add(&basic_q, basic.time_arrived[basic.head], basic.time_service[basic.head]);
             basic.head++;
-            //cout << "Added basic at time " << (double)timer / 1000 << endl;
            // Output(&basic_q);
         }
 
@@ -232,8 +250,6 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
             {
                 cout << "served                     : " << vip_passed << endl;
                 cout << "current vip queue length   : " << vip_q.size << endl;
-                cout << "current basic queue length : " << basic_q.size << endl;
-                //cout << "debug :" << local_basic.tail << " " << local_basic.head << endl;
                 cout << "time is                    : " << (double)timer / 1000 << endl << endl << endl;
 
             }
@@ -245,7 +261,6 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
                 // pushing basic element from oa to the end of the basic queue
                 Add(&basic_q, basic_q.first->next->timer_arrived, basic_q.first->next->time_service);
                 Delete(&basic_q);
-                //out << "basic throwed out in time:" << (double)timer / 1000 << endl;
                 throwed++;
 
                 time_second_servicing = 0;
@@ -271,7 +286,6 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
                 {
                     Delete(&basic_q);
                     is_basic_in_oa = false;
-                    //cout << "basic passed at time " << (double)timer / 1000 << endl;
                     time_second_servicing = 0;
                     success++;
                 }
@@ -299,6 +313,13 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
     cout << "requests in       : " << MAGIC + basic.head << endl;
     cout << "requests out      : " << MAGIC + success << endl;
     cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%" << endl;
+
+    if (frm == 1) {
+        cout << "Addresses where we could see memory fragmentation: " << endl;
+        for (int i = 0; i < msize; i++) {
+            cout << masdel[i] << " ";
+        }
+    }
 
 }
 
