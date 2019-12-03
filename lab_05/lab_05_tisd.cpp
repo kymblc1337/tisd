@@ -3,8 +3,10 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <time.h>
 #include <stdio.h>
 #include "queue_v.h"
+#include "list.h"
 
 using namespace std;
 
@@ -20,10 +22,58 @@ using namespace std;
 int main()
 {
 
-    v_init_vip(1000, 5000, 1000, 4000, 0);
-    v_init_basic(20000, 3000, 0, 1000, 0);
-    //v_output(100, 1);
-    worker(5000, 1000, 4000, 0);
+    int work_mode;
+    cout << "Select work mode:" << endl;
+    cout << "1. Massive" << endl;
+    cout << "2. List" << endl;
+    cin >> work_mode;
+
+    int in_mode;
+    double maxta = 5;
+    double minta = 1;
+    double maxts = 4;
+    double mints = 0;
+
+    cout << "Do you want to input your own time limits?" << endl;
+    cout << "1.Yes" << endl;
+    cout << "0.No" << endl;
+    cin >> in_mode;
+    if (in_mode)
+    {
+        cout << "For vip queue:" << endl;
+        cout << "Input maximum time arrive:" << endl;
+        cin >> maxta;
+        cout << "Input minimum time arrive:" << endl;
+        cin >> minta;
+
+        cout << "Input maximum time arrive:" << endl;
+        cin >> maxts;
+        cout << "Input maximum time arrive:" << endl;
+        cin >> mints;
+    }
+
+
+    if (work_mode == 1) {
+        clock_t time_start, time_end, time_spend;
+        time_start = clock();
+        v_init_vip(1500, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+        v_init_basic(20000, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+        //v_output(100, 1);
+        //worker(5000, 1000, 4000, 0);
+        worker_another_ver((int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+        time_end = clock();
+        time_spend = time_end - time_start;
+        cout << endl << "Time for realization massive method: " << time_spend;
+    }
+    else
+    {
+        clock_t time_start, time_end, time_spend;
+        time_start = clock();
+        worker_with_list((int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+        time_end = clock();
+        time_spend = time_end - time_start;
+        cout << endl << "Time for realization list method: " << time_spend;
+    }
     return 0;
 }
 
