@@ -40,6 +40,7 @@ int main()
     cin >> in_mode;
     if (in_mode)
     {
+        cout << "Be careful, only 3 numbers after pont! " << endl;
         cout << "For vip queue:" << endl;
         cout << "Input maximum time arrive:" << endl;
         cin >> maxta;
@@ -48,7 +49,7 @@ int main()
 
         cout << "Input maximum time service:" << endl;
         cin >> maxts;
-        cout << "Input maximum time service:" << endl;
+        cout << "Input minumum time service:" << endl;
         cin >> mints;
     }
 
