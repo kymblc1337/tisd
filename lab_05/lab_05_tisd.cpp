@@ -46,9 +46,9 @@ int main()
         cout << "Input minimum time arrive:" << endl;
         cin >> minta;
 
-        cout << "Input maximum time arrive:" << endl;
+        cout << "Input maximum time service:" << endl;
         cin >> maxts;
-        cout << "Input maximum time arrive:" << endl;
+        cout << "Input maximum time service:" << endl;
         cin >> mints;
     }
 
