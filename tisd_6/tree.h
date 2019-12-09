@@ -99,4 +99,19 @@ void printWithLvls (tree_Node *w, int lvl)
     }
 }
 
+tree_Node *getNodeByValue(tree_Node *root, int value) {
+    while (root) {
+        if (root->data > value) {
+            root = root->left;
+            continue;
+        } else if (root->data < value) {
+            root = root->right;
+            continue;
+        } else {
+            return root;
+        }
+    }
+    return NULL;
+}
+
 #endif //TISD_6_TREE_H

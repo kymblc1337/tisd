@@ -63,6 +63,18 @@ void Queue_output(List *Q)
         cout << endl;
     }
 }
-
+bool hash_list_search(List *mas, int data)
+{
+    int h = hash_func(data);
+    Node *nd = mas[h].first;
+    while (nd->next != NULL)
+    {
+        if (nd->next->data == data)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 #endif //TISD_6_HASH_H
