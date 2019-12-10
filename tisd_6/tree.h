@@ -32,6 +32,7 @@ void tree_insert(tree_Node **head, int value) {
     tmp = *head;
     while (tmp)
     {
+        // to the right tree
         if (value > tmp->data) {
             if (tmp->right)
             {
@@ -44,6 +45,7 @@ void tree_insert(tree_Node **head, int value) {
                 return;
             }
         }
+        // to the left tree
         else if (value < tmp->data)
         {
             if (tmp->left)
@@ -53,12 +55,14 @@ void tree_insert(tree_Node **head, int value) {
             }
             else
             {
+                // here we go
                 tmp->left = New_Node(value, tmp);
                 return;
             }
         }
         else
         {
+            // exiting
             exit(2);
         }
     }
@@ -87,8 +91,7 @@ tree_Node *get_Node_by_value(tree_Node *root, int value) {
 
 void printWithLvls (tree_Node *w, int lvl)
 {
-// *w - указатель на корень дерева
-// lvl - уровень вершины
+
     if  (w != NULL)
     {
         printWithLvls (w->right, lvl + 1);
@@ -99,19 +102,5 @@ void printWithLvls (tree_Node *w, int lvl)
     }
 }
 
-tree_Node *getNodeByValue(tree_Node *root, int value) {
-    while (root) {
-        if (root->data > value) {
-            root = root->left;
-            continue;
-        } else if (root->data < value) {
-            root = root->right;
-            continue;
-        } else {
-            return root;
-        }
-    }
-    return NULL;
-}
 
 #endif //TISD_6_TREE_H
