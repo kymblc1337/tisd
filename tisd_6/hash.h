@@ -73,6 +73,7 @@ bool hash_list_search(List *mas, int data)
         {
             return true;
         }
+        nd = nd->next;
     }
     return false;
 }

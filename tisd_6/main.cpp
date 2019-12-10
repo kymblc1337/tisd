@@ -11,7 +11,17 @@ using namespace std;
 
 int main()
 {
-
+    //################################################
+    //################################################
+    int readmode = 1;
+    cout << "Select readmode" << endl;
+    cout << "1. File" << endl;
+    cout << "2. Console" << endl;
+    cout << "3. Random" << endl;
+    cin >> readmode;
+    // 1 - file 2 -hands input 3 - random generation
+    //################################################
+    //################################################
     // for balansed tree
     rb_tree my_tree;
     my_tree.root = NULL;
@@ -25,7 +35,6 @@ int main()
 
     // global var
     int n;
-    cin >> n;
     int dat;
     int sfor = 15;
 
@@ -34,13 +43,41 @@ int main()
     {
         Creation(&(mas_list[i]));
     }
-    for (int i = 0; i < n; i++)
-    {
-        cin >> dat;
-        h = hash_func(dat);
-        Add(&(mas_list[h]), dat); // inserting in hash table
-        tree_insert(&head, dat); // inserting in basic tree
-        rb_insert(&my_tree, dat); // inserting in balansed_tree
+
+    { // reading
+        if (readmode == 2) {
+            cout << "Input n" << endl;
+            cin >> n;
+            for (int i = 0; i < n; i++) {
+                cin >> dat;
+                h = hash_func(dat);
+                Add(&(mas_list[h]), dat); // inserting in hash table
+                tree_insert(&head, dat); // inserting in basic tree
+                rb_insert(&my_tree, dat); // inserting in balansed_tree
+            }
+        }
+        if (readmode == 1) {
+            FILE *f = fopen("input.txt", "r");
+            fscanf(f, "%d", &n);
+            for (int i = 0; i < n; i++) {
+                fscanf(f, "%d", &dat);
+                h = hash_func(dat);
+                Add(&(mas_list[h]), dat); // inserting in hash table
+                tree_insert(&head, dat); // inserting in basic tree
+                rb_insert(&my_tree, dat); // inserting in balansed_tree
+            }
+        }
+        if (readmode == 3) {
+            cout << "Input n" << endl;
+            cin >> n;
+            for (int i = 0; i < n; i++) {
+                dat = rand() % 101;
+                h = hash_func(dat);
+                Add(&(mas_list[h]), dat); // inserting in hash table
+                tree_insert(&head, dat); // inserting in basic tree
+                rb_insert(&my_tree, dat); // inserting in balansed_tree
+            }
+        }
     }
     cout << "Input value we are searching for:";
     cin >> sfor;
@@ -63,11 +100,11 @@ int main()
     tree_Node *ts = get_Node_by_value(head, sfor);
     if (ts == NULL)
     {
-        cout << "Tree search res 0";
+        cout << "Tree search res 0" << endl;
     }
     else
     {
-        cout << "Tree search res 1";
+        cout << "Tree search res 1" << endl;
     }
 
     rb_node *rbts = rb_serch(&my_tree, sfor);
