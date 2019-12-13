@@ -124,7 +124,7 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
 
         //#################################################################################
 
-        // checking is is time to send vip in oa
+        // checking is is time to send vip in local queue
         for (int j = vip.head; vip.time_arrived[j] <= timer; j++)
         {
             local_vip.time_arrived[local_vip.tail] = vip.time_arrived[vip.head];
@@ -132,7 +132,7 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
             vip.head++;
             local_vip.tail++;
         }
-        // checking is is time to send basic in oa
+        // checking is is time to send basic in local queue
         for (int j = basic.head; basic.time_arrived[j] <= timer; j++)
         {
             local_basic.time_arrived[local_basic.tail] = basic.time_arrived[basic.head];
@@ -142,10 +142,9 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
         }
 
         //#################################################################################
-        if (local_vip.head != local_vip.tail) // if smt in vip queue
+        if (local_vip.head != local_vip.tail) // if vip queue is not empty
         {
-
-            if (!(local_vip.head % 100) && local_vip.head != 0)
+            if (!(local_vip.head % 10) && local_vip.head != 0)
             {
                 cout << "served                     : " << local_vip.head << endl;
                 cout << "current vip queue length   : " << local_vip.tail - local_vip.head << endl;
@@ -185,7 +184,7 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
             {
                 time_second_servicing++;
             }
-            if (time_second_servicing == local_basic.head)
+            if ((time_second_servicing >= local_basic.time_service[local_basic.head]) && (is_basic_in_oa))
             {
                 local_basic.head++;
                 is_basic_in_oa = false;

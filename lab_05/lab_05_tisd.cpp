@@ -28,6 +28,7 @@ int main()
     cin >> work_mode;
 
     int in_mode;
+/*
     double maxta = 5;
     double minta = 1;
     double maxts = 4;
@@ -37,6 +38,18 @@ int main()
     double bminta = 0;
     double bmaxts = 1;
     double bmints = 0;
+*/
+
+    double maxta = 5;
+    double minta = 0;
+    double maxts = 10;
+    double mints = 0;
+
+    double bmaxta = 3;
+    double bminta = 0;
+    double bmaxts = 1;
+    double bmints = 0;
+
 
     cout << "Do you want to input your own time limits?" << endl;
     cout << "1.Yes" << endl;
