@@ -28,6 +28,7 @@ int main()
     cin >> work_mode;
 
     int in_mode;
+
 /*
     double maxta = 5;
     double minta = 1;
@@ -82,8 +83,10 @@ int main()
         cin >> bmints;
     }
 
-    v_init_vip(1500, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
-    v_init_basic(20000, (int)(bmaxta * 1000), (int)(0 * 1000), (int)(bmaxts * 1000), (int)(bmints * 1000));
+
+    v_init_vip(4000, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
+    v_init_basic(30000, (int)(bmaxta * 1000), (int)(0 * 1000), (int)(bmaxts * 1000), (int)(bmints * 1000));
+    avr();
     if (work_mode == 1) {
         clock_t time_start, time_end, time_spend;
         time_start = clock();

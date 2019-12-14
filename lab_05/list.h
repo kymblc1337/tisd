@@ -250,6 +250,7 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
             {
                 cout << "served                     : " << vip_passed << endl;
                 cout << "current vip queue length   : " << vip_q.size << endl;
+                cout << "current basic queue length : " << basic_q.size << endl;
                 cout << "time is                    : " << (double)timer / 1000 << endl << endl << endl;
 
             }
@@ -282,7 +283,7 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
             if (is_basic_in_oa)
             {
                 time_second_servicing++;
-                if (time_second_servicing == basic_q.first->next->time_service)
+                if (time_second_servicing >= basic_q.first->next->time_service)
                 {
                     Delete(&basic_q);
                     is_basic_in_oa = false;
@@ -310,8 +311,8 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
 
     cout << "time spend        : " << (double)timer / 1000 << endl;
     cout << "\'throwed\'         : " << throwed << endl;
-    cout << "requests in       : " << MAGIC + basic.head << endl;
-    cout << "requests out      : " << MAGIC + success << endl;
+    cout << "requests in       : " << vip.tail + basic.tail << endl;
+    cout << "requests out      : " << vip.tail + success << endl;
     cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%" << endl;
 
     if (frm == 1) {

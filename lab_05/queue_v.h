@@ -12,8 +12,8 @@ using namespace std;
 
 typedef struct list_queue
 {
-    int time_arrived[30000];
-    int time_service[30000];
+    int time_arrived[40000];
+    int time_service[40000];
     int head;
     int tail;
 } lq;
@@ -30,7 +30,7 @@ void v_init_vip(int size, int t_arrived_max, int t_arrived_min, int t_service_ma
     for (int i = 0; i < size; i++)
     {
         vip.time_arrived[i] = rand() % (t_arrived_max - t_arrived_min) + t_arrived_min;
-        vip.time_service[i] = rand() % (t_arrived_max - t_service_min) + t_service_min;
+        vip.time_service[i] = rand() % (t_service_max - t_service_min) + t_service_min;
         //sum += vip.time_arrived[i];
     }
     for (int i = 1; i < size; i++)
@@ -96,11 +96,11 @@ void v_output(int size, int mode) // mode: 1 - only vip, 2 - only basic, 3 - all
 void avr() //just for debug
 {
     unsigned long long sum = 0;
-    for (int i = 0; i < vip.tail; i++)
+    for (int i = 0; i < 1000; i++)
     {
         sum += vip.time_service[i];
     }
-    cout << sum / vip.tail;
+    cout << sum / 1000 << endl;
 }
 
 void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max, int t_service_min)
@@ -118,7 +118,7 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
     int throwed = 0;
     int success = 0;
 
-    while (local_vip.head <= MAGIC)
+    while (local_vip.head <= MAGIC + 1)
     {
 
 
@@ -144,14 +144,14 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
         //#################################################################################
         if (local_vip.head != local_vip.tail) // if vip queue is not empty
         {
-            if (!(local_vip.head % 10) && local_vip.head != 0)
+            if (!(local_vip.head % 100) && local_vip.head != 0)
             {
                 cout << "served                     : " << local_vip.head << endl;
                 cout << "current vip queue length   : " << local_vip.tail - local_vip.head << endl;
                 cout << "current basic queue length : " << local_basic.tail - local_basic.head << endl;
                 cout << "time is                    : " << (double)timer / 1000 << endl << endl << endl;
-
             }
+
 
 
             if (is_basic_in_oa)
@@ -183,20 +183,20 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
             if (is_basic_in_oa)
             {
                 time_second_servicing++;
-            }
-            if ((time_second_servicing >= local_basic.time_service[local_basic.head]) && (is_basic_in_oa))
-            {
-                local_basic.head++;
-                is_basic_in_oa = false;
-                time_second_servicing = 0;
-                success++;
+                if (time_second_servicing >= local_basic.time_service[local_basic.head])
+                {
+                    local_basic.head++;
+                    is_basic_in_oa = false;
+                    time_second_servicing = 0;
+                    success++;
+                }
             }
         }
         timer++;
     }
 
     int result_error;
-    if ((t_arrived_max + t_arrived_min)/2 >= (t_service_max + t_service_min)/2)
+    if ((t_arrived_max + t_arrived_min) >= (t_service_max + t_service_min))
     {
         result_error = MAGIC * (t_arrived_max + t_arrived_min) / 2;
     }
@@ -211,8 +211,9 @@ void worker_another_ver(int t_arrived_max, int t_arrived_min, int t_service_max,
      */
     cout << "time spend        : " << (double)timer / 1000 << endl;
     cout << "\'throwed\'         : " << throwed << endl;
-    cout << "requests in       : " << MAGIC + basic.head << endl;
-    cout << "requests out      : " << MAGIC + success << endl;
+    cout << "vip requests in    : " << vip.head << endl;
+    cout << "baisc requests in  : " << basic.head << endl;
+    cout << "requests out      : " << local_vip.head + success << endl;
     cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%" << endl;
 
 }
@@ -302,7 +303,6 @@ void worker(int t_arrived_max, int t_arrived_min, int t_service_max, int t_servi
 
     cout << "time spend        : " << (double)timer / 1000 << endl;
     cout << "\'throwed\'         : " << throwed << endl;
-    cout << "requests in       : " << MAGIC + basic.head << endl;
     cout << "requests out      : " << MAGIC + succes << endl;
     cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%" << endl;
     //cout << "successfulu passed: " << succes << endl;
