@@ -59,6 +59,21 @@ int npush_witch_check(Node** head, char c)
         return 1;
     }
 }
+char npop_witch_check_for_stack_info(Node** head) {
+    if (*head == NULL)
+    {
+        return '\0';
+    }
+    Node* foo = *head;
+    char save = foo->data;
+    *head = (*head)->next;
+    masdel[msize++] = foo;
+    cout << " (" <<  foo << ")";
+    delete foo;
+    return save;
+}
+
+
 char npop_witch_check(Node** head) {
     if (*head == NULL)
     {
@@ -106,7 +121,7 @@ void nstackout(Node **head)
     cout << "Stack is: ";
     while (*head != NULL)
     {
-        c = npop_witch_check(head);
+        c = npop_witch_check_for_stack_info(head);
         m.mas[i++] = c;
         cout << c;
     }
