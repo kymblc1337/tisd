@@ -190,8 +190,10 @@ void fast_matrix_delete(struct fast_matrix* sup)
     delete[] sup->values;
 }
 
-void stupid_matrix_multiply(struct matrix a, struct vector_row v, struct vector_row* res, int out_mode)
+clock_t stupid_matrix_multiply(struct matrix a, struct vector_row v, struct vector_row* res, int out_mode)
 {
+    clock_t start, stop;
+    start = clock();
     int cursum;
 
     for (int i = 0; i < a.col; i++)
@@ -204,6 +206,7 @@ void stupid_matrix_multiply(struct matrix a, struct vector_row v, struct vector_
         }
         res->mas[i] = cursum;
     }
+    stop = clock();
 
 
 
@@ -268,6 +271,7 @@ void stupid_matrix_multiply(struct matrix a, struct vector_row v, struct vector_
         }
         cout << endl;
     }
+    return stop - start;
 }
 void super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int output_mode)
 {
@@ -499,17 +503,21 @@ int main()
 
 
     // first method
-    clock_t time_start, time_end;
-    time_start = clock();
-    stupid_matrix_multiply(a, v, &res, out_mode);
+//    clock_t time_start, time_end;
+//    time_start = clock();
+//    stupid_matrix_multiply(a, v, &res, out_mode);
+//    cout << endl;
+//    time_end = clock();
+//    clock_t time_spend = time_end - time_start;
+    clock_t timer;
+    timer = stupid_matrix_multiply(a, v, &res, out_mode);
+    cout << "time spend for basic multiply  : " << timer << endl;
     cout << endl;
-    time_end = clock();
-    clock_t time_spend = time_end - time_start;
-    cout << "time spend for basic multiply  : " << double(time_spend) << endl;
-    cout << endl;
+
     // second method
-    time_start = clock();
+    clock_t time_end, time_spend;
     slow_to_fast(&a, &sup);
+    clock_t time_start = clock();
     super_smart_multiply(&sup, &v, out_mode);
     cout << endl;
     time_end = clock();
