@@ -273,7 +273,7 @@ clock_t stupid_matrix_multiply(struct matrix a, struct vector_row v, struct vect
     }
     return stop - start;
 }
-void super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int output_mode)
+clock_t super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int output_mode)
 {
     //cout << "super fast res is :";
     int bar = 0; // one more counter
@@ -283,7 +283,8 @@ void super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int out
     int cnt = 0;
     struct fast_matrix a;
 
-
+    clock_t start, end;
+    start = clock();
     for (int i = 0; i < sup->col_length - 1; i++)
     {
         int now = sup->col[i + 1] - sup->col[i];
@@ -300,7 +301,7 @@ void super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int out
         }
         //cout << sum << " ";
     }
-
+    end = clock();
 
 
     bar = 0;
@@ -356,6 +357,7 @@ void super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int out
         }
         cout << endl;
     }
+    return end - start;
 }
 void coord_matrix_input(struct matrix *a)
 {
@@ -511,18 +513,18 @@ int main()
 //    clock_t time_spend = time_end - time_start;
     clock_t timer;
     timer = stupid_matrix_multiply(a, v, &res, out_mode);
-    cout << "time spend for basic multiply  : " << timer << endl;
+    cout << endl << "time spend for basic multiply  : " << timer << endl;
     cout << endl;
 
     // second method
-    clock_t time_end, time_spend;
+//    clock_t time_end, time_spend;
     slow_to_fast(&a, &sup);
-    clock_t time_start = clock();
-    super_smart_multiply(&sup, &v, out_mode);
+//    clock_t time_start = clock();
+    timer = super_smart_multiply(&sup, &v, out_mode);
     cout << endl;
-    time_end = clock();
-    time_spend = time_end - time_start;
-    cout << "time spend for 'smart' multiply: " << double(time_spend) << endl;
+//    time_end = clock();
+//    time_spend = time_end - time_start;
+    cout << "time spend for 'smart' multiply: " << timer << endl;
 
     //         |
     // The end V
