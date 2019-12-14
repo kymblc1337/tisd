@@ -4,7 +4,7 @@
 
 #ifndef LAB_04_TISD_CDIO_H
 #define LAB_04_TISD_CDIO_H
-#define MAXSIZE 1000
+#define MAXSIZE 1000000
 #include <stdlib.h>
 #include <stdio.h>
 
