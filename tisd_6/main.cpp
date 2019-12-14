@@ -1,5 +1,6 @@
 #include <iostream>
 #include "defines.h"
+#include <time.h>
 #include "hash.h"
 #include "tree.h"
 #include "balance_tree.h"
@@ -11,6 +12,7 @@ using namespace std;
 
 int main()
 {
+    srand(time(NULL));
     //################################################
     //################################################
     int readmode = 1;
@@ -27,7 +29,8 @@ int main()
     my_tree.root = NULL;
 
     // for hash-table
-    List mas_list[ASIZE];
+    List *mas_list = new List[ASIZE];
+    //List mas_list[ASIZE];
     int h;
 
     // for basic tree
@@ -79,8 +82,6 @@ int main()
             }
         }
     }
-    cout << "Input value we are searching for:";
-    cin >> sfor;
 
     // Output what we have read
     cout << "baisc tree:" << endl;
@@ -94,28 +95,32 @@ int main()
         Queue_output(&(mas_list[i]));
     }
 
+    cout << "Input value we are searching for:";
+    cin >> sfor;
+
     // searching
-    cout << "Hash table search res: " << hash_list_search(mas_list, sfor) << endl;
+    int htr = hash_list_search(mas_list, sfor);
 
-    tree_Node *ts = get_Node_by_value(head, sfor);
-    if (ts == NULL)
+    int tree_search = get_Node_by_value(head, sfor);
+
+
+    int bal_tree_search = rb_serch(&my_tree, sfor);
+
+    mas_list = restructed_search(mas_list);
+    cout << "Restructed hash table: " << endl;
+    for (int i = 0; i < ASIZE; i++)
     {
-        cout << "Tree search res 0" << endl;
-    }
-    else
-    {
-        cout << "Tree search res 1" << endl;
+        cout << "[" << i << "]";
+        Queue_output(&(mas_list[i]));
     }
 
-    rb_node *rbts = rb_serch(&my_tree, sfor);
-    if (rbts == NULL)
-    {
-        cout << "Balansed tree search res 0";
-    }
-    else
-    {
-        cout << "Balansed tree search res 1";
-    }
+
+
+    cout << "Hash table search res: " << htr << endl;
+    cout << "Tree search res " << tree_search << endl;
+    cout << "Balanced tree res " << bal_tree_search << endl;
+    cout << "Restructed Hash table search res: " << hash_list_search(mas_list, sfor) << endl;
+
 
     return 0;
 

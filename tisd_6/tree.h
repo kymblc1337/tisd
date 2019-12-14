@@ -63,30 +63,33 @@ void tree_insert(tree_Node **head, int value) {
         else
         {
             // exiting
-            exit(2);
+            break;
         }
     }
 }
 
-tree_Node *get_Node_by_value(tree_Node *root, int value) {
+int get_Node_by_value(tree_Node *root, int value) {
+    int counter = 0;
     while (root)
     {
         if (root->data > value)
         {
             root = root->left;
+            counter++;
             continue;
         }
         else if (root->data < value)
         {
             root = root->right;
+            counter++;
             continue;
         }
         else
         {
-            return root;
+            return counter;
         }
     }
-    return NULL;
+    return -1;
 }
 
 void printWithLvls (tree_Node *w, int lvl)

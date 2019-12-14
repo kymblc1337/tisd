@@ -136,22 +136,25 @@ int rb_insert ( struct rb_tree *tree, int data )
     return 1;
 }
 
-rb_node *rb_serch (rb_tree *tree, int data)
+int rb_serch (rb_tree *tree, int data)
 {
+    int counter = 0;
     rb_node *tmp;
     tmp = tree->root;
     while (tmp) {
         if (tmp->data > data) {
             tmp = tmp->link[0];
+            counter++;
             continue;
         } else if (tmp->data < data) {
             tmp = tmp->link[1];
+            counter++;
             continue;
         } else {
-            return tmp;
+            return counter;
         }
     }
-    return NULL;
+    return -1;
 }
 
 void printrbtree (rb_node *w, int lvl)

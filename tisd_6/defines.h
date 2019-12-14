@@ -5,6 +5,6 @@
 #ifndef TISD_6_DEFINES_H
 #define TISD_6_DEFINES_H
 
-const int ASIZE = 10;
+int ASIZE = 10;
 
 #endif //TISD_6_DEFINES_H

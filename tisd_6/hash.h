@@ -63,19 +63,57 @@ void Queue_output(List *Q)
         cout << endl;
     }
 }
-bool hash_list_search(List *mas, int data)
+int hash_list_search(List *mas, int data)
 {
+    int search_counter = 1;
     int h = hash_func(data);
     Node *nd = mas[h].first;
     while (nd->next != NULL)
     {
         if (nd->next->data == data)
         {
-            return true;
+            return search_counter;
         }
         nd = nd->next;
+        search_counter++;
     }
-    return false;
+    return -1;
+}
+
+List* restructed_search(List *src)
+{
+    List *newList = new List[ASIZE * 3];
+    int ASIZESAVER = ASIZE;
+    ASIZE *= 3;
+    Node *tmp;
+    int h;
+    int dat;
+
+    for (int i = 0; i < ASIZE; i++)
+    {
+        Creation(&(newList[i]));
+    }
+    for (int i = 0; i < ASIZESAVER; i++)
+    {
+        tmp = src[i].first;
+        for(int j = 0; j < src[i].size; j++)
+        {
+            dat = tmp->next->data;
+            h = hash_func(dat);
+            Add(&(newList[h]), dat);
+            tmp = tmp->next;
+        }
+    }
+
+//    for (int i = 0; i < ASIZE; i++)
+//    {
+//        cout << "[" << i << "]";
+//        Queue_output(&(newList[i]));
+//    }
+
+
+    List *ptr = newList;
+    return ptr;
 }
 
 #endif //TISD_6_HASH_H
