@@ -26,6 +26,7 @@ int main()
     scanf("%d", &n);
     matrix_crate(&mas, n, n);
     matrix_input(&mas, n, n);
+    matrix_painter(mas);
 
     for (int i = 0 ; i < n; i++)
     {

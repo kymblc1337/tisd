@@ -10,30 +10,7 @@
 #include <iostream>
 #include "matrix_cdio.h"
 
-/*
-int dfs(matrix mas, int from, int v)
-{
-    if (color[v] == BLACK)
-    {
-        return 0;
-    }
-    color[v] = BLACK;
-    int way;
-    way = s[from] + mas.matrix[from][v];
-    if (way > s[v])
-    {
-        s[v] = way;
-    }
-    for (int i = 0; i < mas.row; i++)
-    {
-        if (mas.matrix[v][i] != 0)
-        {
-            dfs(mas, v, i);
-        }
-    }
-    return 0;
-}
-*/
+
 int dfs(matrix mas, int v)
 {
     if (color[v] == BLACK)
@@ -108,7 +85,7 @@ bool cycleFinder(struct matrix mas, int v, bool *flag)
         {
             dfs(mas, i);
         }
-        if (color[i] == RED)
+        if ((color[i] == RED) && (i != v))
         {
             *flag = true;
             return true;
@@ -116,6 +93,25 @@ bool cycleFinder(struct matrix mas, int v, bool *flag)
     }
     color[v] = BLACK;
 
-};
+}
+
+void matrix_painter(struct matrix mas)
+{
+    FILE *f = fopen("output.dot", "w");
+    fprintf(f, "digraph test{\n");
+    for (int i = 0; i < mas.row; i++)
+    {
+        for (int j = 0; j < mas.row; j++)
+        {
+            if (mas.matrix[i][j])
+            {
+                fprintf(f, "    %d->%d[label = %d];\n", i+1, j+1, mas.matrix[i][j]);
+            }
+        }
+    }
+    fprintf(f, "}");
+    fclose(f);
+    system("dot -Tpng -O output.dot");
+}
 
 #endif //TISD_07_MATRIX_FUNC_H
