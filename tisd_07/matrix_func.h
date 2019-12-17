@@ -112,6 +112,9 @@ void matrix_painter(struct matrix mas)
     fprintf(f, "}");
     fclose(f);
     system("dot -Tpng -O output.dot");
+    int graph_view;
+    //std::cout << "Do you want to s"
+    system("gthumb output.dot.png");
 }
 
 #endif //TISD_07_MATRIX_FUNC_H

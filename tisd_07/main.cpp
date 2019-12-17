@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 
-/*
+/* single component
 4
 0 50 20 0
 0 0 0 0
@@ -14,6 +14,16 @@
 0 0 0 0
  */
 
+
+/* 2 components
+6
+0 20 40 0 0 0
+0 0 30 0 0 0
+0 0 0 0 0 0
+0 0 0 0 20 0
+0 0 0 0 0 40
+0 0 0 0 0 0
+ */
 using namespace std;
 int main()
 {
@@ -23,7 +33,8 @@ int main()
 
     int maxWayLen, maxWayFrom, maxWayTo;
 
-    scanf("%d", &n);
+    cout << "Input number of points" << endl;
+    cin >> n;
     matrix_crate(&mas, n, n);
     matrix_input(&mas, n, n);
     matrix_painter(mas);
@@ -34,6 +45,7 @@ int main()
         cycleFinder(mas, 0, &cycles);
         if (cycles) {
             cout << "Cycles found!" << endl;
+            cout << "Max way length is: infinity";
             return 0;
         }
     }
