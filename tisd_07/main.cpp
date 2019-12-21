@@ -20,7 +20,7 @@
 0 20 40 0 0 0
 0 0 30 0 0 0
 0 0 0 0 0 0
-0 0 0 0 20 0
+0 0 0 0 30 0
 0 0 0 0 0 40
 0 0 0 0 0 0
  */
@@ -35,6 +35,11 @@ int main()
 
     cout << "Input number of points" << endl;
     cin >> n;
+    if (n <= 0)
+    {
+        cout << "Error!";
+        return EXIT_FAILURE;
+    }
     matrix_crate(&mas, n, n);
     matrix_input(&mas, n, n);
     matrix_painter(mas);
