@@ -311,8 +311,10 @@ void worker_with_list(int t_arrived_max, int t_arrived_min, int t_service_max, i
 
     cout << "time spend        : " << (double)timer / 1000 << endl;
     cout << "\'throwed\'         : " << throwed << endl;
-    cout << "requests in       : " << vip.tail + basic.tail << endl;
-    cout << "requests out      : " << vip.tail + success << endl;
+//    cout << "requests in       : " << vip.tail + basic.tail << endl;
+    cout << "vip requests in    : " << vip.head << endl;
+    cout << "baisc requests in  : " << basic.head << endl;
+    cout << "requests out      : " << MAGIC + success << endl;
     cout << "error koeffecient : " << fabs((double)(result_error - timer)) / result_error * 100 << "%" << endl;
 
     if (frm == 1) {

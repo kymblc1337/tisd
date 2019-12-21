@@ -21,7 +21,34 @@ typedef struct list_queue
 lq vip;
 lq basic;
 
-
+int time_check(int t_arrived_max, int t_arrived_min, int t_service_max, int t_service_min)
+{
+    if (t_arrived_max < 0)
+    {
+        return EXIT_FAILURE;
+    }
+    if (t_arrived_min < 0)
+    {
+        return EXIT_FAILURE;
+    }
+    if (t_service_max < 0)
+    {
+        return EXIT_FAILURE;
+    }
+    if (t_service_min < 0)
+    {
+        return EXIT_FAILURE;
+    }
+    if (t_arrived_max < t_arrived_min)
+    {
+        return EXIT_FAILURE;
+    }
+    if (t_service_max < t_service_min)
+    {
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
 
 void v_init_vip(int size, int t_arrived_max, int t_arrived_min, int t_service_max, int t_service_min)
 {

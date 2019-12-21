@@ -29,7 +29,7 @@ int main()
 
     int in_mode;
 
-/*
+
     double maxta = 5;
     double minta = 1;
     double maxts = 4;
@@ -39,8 +39,8 @@ int main()
     double bminta = 0;
     double bmaxts = 1;
     double bmints = 0;
-*/
 
+/*
     double maxta = 5;
     double minta = 0;
     double maxts = 10;
@@ -50,7 +50,7 @@ int main()
     double bminta = 0;
     double bmaxts = 1;
     double bmints = 0;
-
+*/
 
     cout << "Do you want to input your own time limits?" << endl;
     cout << "1.Yes" << endl;
@@ -82,10 +82,21 @@ int main()
         cout << "Input minumum time service:" << endl;
         cin >> bmints;
     }
+    if (time_check(int(maxta), int(minta), int(maxts), int(mints)) == EXIT_FAILURE)
+    {
+        cout << "Error!";
+        return EXIT_FAILURE;
+    }
+
+    if (time_check(int(bmaxta), int(bminta), int(bmaxts), int(bmints)) == EXIT_FAILURE)
+    {
+        cout << "Error!";
+        return EXIT_FAILURE;
+    }
 
 
     v_init_vip(4000, (int)(maxta * 1000), (int)(minta * 1000), (int)(maxts * 1000), (int)(mints * 1000));
-    v_init_basic(30000, (int)(bmaxta * 1000), (int)(0 * 1000), (int)(bmaxts * 1000), (int)(bmints * 1000));
+    v_init_basic(30000, (int)(bmaxta * 1000), (int)(bminta * 1000), (int)(bmaxts * 1000), (int)(bmints * 1000));
     avr();
     if (work_mode == 1) {
         clock_t time_start, time_end, time_spend;
