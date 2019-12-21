@@ -1,38 +1,11 @@
+//
+// Created by kymblc on 12/21/19.
+//
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
 #include <iomanip>
 #include "cdio.h"
-#include <time.h>
-
-/*
- * test_one
-    1 0 0 0 2 0
-    0 0 3 4 0 0
-    0 0 0 0 0 0
-    0 0 0 8 0 5
-    0 0 0 0 0 0
-    0 0 0 0 0 0
- * test_two
-  2 0 0
-  1 0 0
-  5 0 0
-  0 0 0
- * test_three
-    0 0 0 0 0
-    0 0 1 3 0
-    0 0 0 2 0
-    0 0 0 0 1
-
-    0 0 0 0
-    0 0 0 0
-    1 0 0 0
-    3 5 0 0
-    0 0 0 0
- */
-using namespace std;
-
-
 
 void matrix_trans(struct matrix* a, struct matrix* res)
 {
@@ -203,8 +176,11 @@ clock_t stupid_matrix_multiply(struct matrix a, struct vector_row v, struct vect
 
 
 
-
-    if (out_mode == 1)
+    if (out_mode == -1)
+    {
+        int b = 2;
+    }
+    else if (out_mode == 1)
     {
         cout << "basic output for basic multiply: ";
         for (int i = 0; i < res->size; i++)
@@ -313,7 +289,11 @@ clock_t super_smart_multiply(struct fast_matrix* sup, struct vector_row* v, int 
             bar++;
         }
     }
-    if (output_mode == 1)
+    if (output_mode == -1)
+    {
+        int b = 2;
+    }
+    else if (output_mode == 1)
     {
         // basic output
         cout << "basic output for smart multiply: ";
@@ -389,26 +369,45 @@ int matrix_file_write(struct matrix a)
     return EXIT_SUCCESS;
 }
 
-int main()
+void vectorrowrandomfill(struct vector_row *v, int percent)
+{
+    srand(time(NULL));
+    int num_of_fields = (v->size) * percent / 100;
+    int pos_to_put;
+    for (int i = 0; i > v->size; i++)
+    {
+        v->mas[i] = 0;
+    }
+    for (int i = 0; i < num_of_fields; i++)
+    {
+        pos_to_put = rand() % v->size;
+        while (v->mas[pos_to_put])
+        {
+            pos_to_put = rand() % v->size;
+        }
+        v->mas[pos_to_put] = (rand() % 20) + 1;
+    }
+}
+
+int superpetser(int percent_of_fill_matrix, int matrix_sizer)
 {
     struct matrix a;
 
+//    struct fast_matrix sup;
     struct fast_matrix sup;
     struct vector_row v;
     struct vector_row res;
     struct vector_row to_put_res_here;
     int usr_choice = 0;
-    int out_mode = 0; // mode of output
+    int out_mode = -1; // mode of output
 
     //int mc = 0;
     //int mr = 0;
     int percent;
 
     // *Matrix init*
-    cout << "Input matrix size(columns(>)):";
-    cin >> a.col;
-    cout << "Input matrix size(rows (V))  :";
-    cin >> a.row;
+    a.col = matrix_sizer;
+    a.row = matrix_sizer;
 
     if ((a.col <= 0) || (a.row <= 0))
     {
@@ -418,23 +417,15 @@ int main()
 
 
     matrix_crate(&a, a.row, a.col);
-    cout << "Wich way you perfer to get matrix?" << endl;
-    cout << "1. Generate random" << endl;
-    cout << "2. Full input" << endl;
-    cout << "3. Coordinate input(format column, row, data)" << endl;
-    cin >> usr_choice;
-    while ((usr_choice < 1) || (usr_choice > 3))
-    {
-        cout << "Error!" << endl;
-        cout << "Wich way you perfer to get matrix?" << endl;
-        cout << "1. Generate random" << endl;
-        cout << "2. Full input" << endl;
-        cout << "3. Coordinate input(format column, row, data)" << endl;
-    }
+//    cout << "Wich way you perfer to get matrix?" << endl;
+//    cout << "1. Generate random" << endl;
+//    cout << "2. Full input" << endl;
+//    cout << "3. Coordinate input(format column, row, data)" << endl;
+    usr_choice = 1;
     switch (usr_choice) {
         case 1:
-            cout << "Wich percent of fill?";
-            cin >> percent;
+            //cout << "Wich percent of fill?";
+            percent = percent_of_fill_matrix;
             matrix_random_fill(&a, percent);
             //matrix_file_write(a);
             break;
@@ -444,12 +435,6 @@ int main()
         case 3:
             coord_matrix_input(&a);
             break;
-    }
-    cout << "Do you want to see your matrix?" << endl << "1.Yes" << endl << "2.No" << endl;
-    cin >> usr_choice;
-    if (usr_choice == 1)
-    {
-        matrix_output(a);
     }
     // *end*
 
@@ -463,24 +448,26 @@ int main()
     vector_create(&res, a.col);
 
 
-    cout << "Wich way do you perfer to get vector?" << endl;
-    cout << "1. Full input" << endl;
-    cout << "2. Coordinate input(format column, data)" << endl;
-    cin >> usr_choice;
-    switch (usr_choice) {
-        case 1:
-            cout << "Please input row to multiply(size:" << a.row << "):";
-            vector_input(&v);
-            break;
-        case 2:
-            vector_coord_input(&v);
-            break;
-    }
-    cout << endl << endl;
-
-    cout << "wich method of output do you perfer?" << endl;
-    cout << "1. Vector" << endl << "2. 3 arrays" << endl;
-    cin >> out_mode;
+//    cout << "Wich way do you perfer to get vector?" << endl;
+//    cout << "1. Full input" << endl;
+//    cout << "2. Coordinate input(format column, data)" << endl;
+//    cin >> usr_choice;
+//    switch (usr_choice) {
+//        case 1:
+//            cout << "Please input row to multiply(size:" << a.row << "):";
+//            vector_input(&v);
+//            break;
+//        case 2:
+//            vector_coord_input(&v);
+//            break;
+//    }
+//    cout << endl << endl;
+    vectorrowrandomfill(&v, 100);
+    //vector_output(v);
+//    cout << "wich method of output do you perfer?" << endl;
+//    cout << "1. Vector" << endl << "2. 3 arrays" << endl;
+//    cin >> out_mode;
+    out_mode = -1;
     // *end*
 
 
@@ -504,20 +491,27 @@ int main()
 //    cout << endl;
 //    time_end = clock();
 //    clock_t time_spend = time_end - time_start;
+    cout << "For size " << matrix_sizer << " and percent " << percent_of_fill_matrix << " res is:" << endl;
     clock_t timer;
-    timer = stupid_matrix_multiply(a, v, &res, out_mode);
-    cout << endl << "time spend for basic multiply  : " << timer << endl;
-    cout << endl;
+    clock_t st, end;
+    st = clock();
+    timer = stupid_matrix_multiply(a, v, &res, -1);
+    end = clock();
+    cout << endl << "For basic multiply  : " << timer << endl;
+    /*cout << end - st;*/
 
     // second method
 //    clock_t time_end, time_spend;
     slow_to_fast(&a, &sup);
 //    clock_t time_start = clock();
-    timer = super_smart_multiply(&sup, &v, out_mode);
+    st = clock();
+    timer = super_smart_multiply(&sup, &v, -1);
+    end = clock();
     cout << endl;
 //    time_end = clock();
 //    time_spend = time_end - time_start;
-    cout << "time spend for 'smart' multiply: " << timer << endl;
+    cout << "For 'smart' multiply: " << timer << endl;
+    cout << end - st << endl;
 
     //         |
     // The end V
@@ -526,4 +520,34 @@ int main()
     vector_delete(&res);
     fast_matrix_delete(&sup);
     return 0;
+}
+
+int main()
+{
+    struct fast_matrix a;
+    int size = 1000;
+    cout << "size of smart marix : " << (2 * size * size * 4 * (10)) / 100 + size * 4 << endl;
+    cout << "size of smart marix : " << (2 * size * size * 4 * (25)) / 100 + size * 4 << endl;
+    cout << "size of smart marix : " << (2 * size * size * 4 * (50)) / 100 + size * 4 << endl;
+    cout << "size of smart marix : " << (2 * size * size * 4 * (75)) / 100 + size * 4 << endl;
+    cout << "size of smart marix : " << (2 * size * size * 4 * (100)) / 100 + size * 4 << endl;
+    cout << "size of basic matrix: " << size * size * 4;
+    return 0;
+    int sizeoftest = 1000;
+//    superpetser(10, sizeoftest);
+//    cout << endl << endl;
+//    superpetser(25, sizeoftest);
+//    cout << endl << endl;
+//    superpetser(50, sizeoftest);
+//    cout << endl << endl;
+//    superpetser(75, sizeoftest);
+//    cout << endl << endl;
+//    superpetser(100, sizeoftest);
+//    cout << endl << endl;
+
+
+
+    superpetser(75, sizeoftest);
+    cout << endl << endl;
+
 }

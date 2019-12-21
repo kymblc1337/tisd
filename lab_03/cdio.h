@@ -21,6 +21,14 @@ struct vector_row
     int *mas;
     int size;
 };
+struct fast_matrix
+{
+    int* values;
+    int* col;
+    int* row;
+    int values_length;
+    int col_length;
+};
 
 
 int vector_create(struct vector_row *v, int size)
