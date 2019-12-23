@@ -12,6 +12,12 @@ struct tree_Node {
     struct tree_Node *parent;
 };
 
+struct my_tree
+{
+    tree_Node *root;
+    int count;
+};
+
 tree_Node* New_Node(int value, tree_Node *parent) {
     tree_Node* tmp = (tree_Node*) malloc(sizeof(tree_Node));
     tmp->left = tmp->right = NULL;
