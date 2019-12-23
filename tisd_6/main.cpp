@@ -21,11 +21,16 @@ int main()
     cout << "2. Console" << endl;
     cout << "3. Random" << endl;
     cin >> readmode;
+    if ((readmode > 3) || (readmode < 1))
+    {
+        cout << "error!" << endl;
+        return EXIT_FAILURE;
+    }
     // 1 - file 2 -hands input 3 - random generation
     //################################################
     //################################################
     // for balansed tree
-    rb_tree my_tree;
+    bal_tree my_tree;
     my_tree.root = NULL;
 
     // for hash-table

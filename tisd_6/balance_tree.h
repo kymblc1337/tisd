@@ -8,22 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct rb_node
+struct bal_node
 {
-    int red;
+    int bal;
     int data;
-    rb_node *link[2];
+    bal_node *link[2];
 };
 
-struct rb_tree
+struct bal_tree
 {
-    rb_node *root;
+    bal_node *root;
     int count;
 };
 
-int is_red (rb_node *node )
+int is_bal (bal_node *node )
 {
-    if (node != NULL && node->red == 1)
+    if (node != NULL && node->bal == 1)
     {
         return 1;
     }
@@ -33,40 +33,40 @@ int is_red (rb_node *node )
     }
 }
 
-struct rb_node *make_node ( int data )
+struct bal_node *make_node ( int data )
 {
-    rb_node *rn = new rb_node;
+    bal_node *rn = new bal_node;
 
     if ( rn != NULL ) {
         rn->data = data;
-        rn->red = 1; // red
+        rn->bal = 1; // bal
         rn->link[0] = NULL;
         rn->link[1] = NULL;
     }
     return rn;
 }
 
-struct rb_node *rb_single ( struct rb_node *root, int dir )
+struct bal_node *rb_single ( struct bal_node *root, int dir )
 {
-    struct rb_node *save = root->link[!dir];
+    struct bal_node *save = root->link[!dir];
 
     root->link[!dir] = save->link[dir];
     save->link[dir] = root;
 
-    root->red = 1;
-    save->red = 0;
+    root->bal = 1;
+    save->bal = 0;
 
     return save;
 }
 
 
-struct rb_node *rb_double (rb_node *root, int dir)
+struct bal_node *rb_double (bal_node *root, int dir)
 {
     root->link[!dir] = rb_single ( root->link[!dir], !dir );
     return rb_single ( root, dir );
 }
 
-int rb_insert ( struct rb_tree *tree, int data )
+int rb_insert ( struct bal_tree *tree, int data )
 {
 
     if ( tree->root == nullptr ) {
@@ -75,9 +75,9 @@ int rb_insert ( struct rb_tree *tree, int data )
             return 0;
     }
     else {
-        struct rb_node head = {0};
-        struct rb_node *g, *t;     // grand parent and parent
-        struct rb_node *p, *q;     // parent
+        struct bal_node head = {0};
+        struct bal_node *g, *t;     // grand parent and parent
+        struct bal_node *p, *q;     // parent
         int dir = 0, last;
 
 
@@ -94,15 +94,15 @@ int rb_insert ( struct rb_tree *tree, int data )
                 if ( q == NULL )
                     return 0;
             }
-            else if ( is_red ( q->link[0] ) && is_red ( q->link[1] ) )
+            else if ( is_bal ( q->link[0] ) && is_bal ( q->link[1] ) )
             {
                 // color change
-                q->red = 1;
-                q->link[0]->red = 0;
-                q->link[1]->red = 0;
+                q->bal = 1;
+                q->link[0]->bal = 0;
+                q->link[1]->bal = 0;
             }
-            // equals of 2 red nodes
-            if ( is_red ( q ) && is_red ( p ) )
+            // equals of 2 bal nodes
+            if ( is_bal ( q ) && is_bal ( p ) )
             {
                 int dir2 = t->link[1] == g;
 
@@ -131,15 +131,15 @@ int rb_insert ( struct rb_tree *tree, int data )
         tree->root = head.link[1];
     }
     // root is black
-    tree->root->red = 0;
+    tree->root->bal = 0;
 
     return 1;
 }
 
-int rb_serch (rb_tree *tree, int data)
+int rb_serch (bal_tree *tree, int data)
 {
     int counter = 0;
-    rb_node *tmp;
+    bal_node *tmp;
     tmp = tree->root;
     while (tmp) {
         if (tmp->data > data) {
@@ -157,7 +157,7 @@ int rb_serch (rb_tree *tree, int data)
     return -1;
 }
 
-void printrbtree (rb_node *w, int lvl)
+void printrbtree (bal_node *w, int lvl)
 {
 // *w - указатель на корень дерева
 // lvl - уровень вершины
