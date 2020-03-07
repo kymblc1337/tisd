@@ -89,3 +89,4 @@ venv
 *.files
 *.includes
 *.creator.user
+*/cmake-build-debug/*
