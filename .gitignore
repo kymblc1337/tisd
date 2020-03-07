@@ -1,3 +1,9 @@
+*.exe
+*.out
+*.o
+*.pch
+*.gch
+=======
 # Prerequisites
 *.d
 
